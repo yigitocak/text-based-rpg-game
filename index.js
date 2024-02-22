@@ -113,7 +113,7 @@ function buyWeapon() {
             text.innerHTML = "As you make your selections, you realize that you've purchased everything the store has to offer. <br><br> Your inventory now includes a variety of powerful weapons and useful items, giving you a significant advantage in your quest. <br><br>With your newfound gear, you feel more prepared than ever to face the challenges ahead."
         }
         else {
-            text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. You decide to stick with your current gear for now, hoping to earn more coins in the future."
+            text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
         }
 }
 
