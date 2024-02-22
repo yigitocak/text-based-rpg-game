@@ -1,6 +1,6 @@
 let xp = 0
 let hp = 100
-let coin = 50
+let coin = 150
 let currentWeapon = 0
 let fighting
 let monsterHealth
@@ -33,6 +33,24 @@ const weapons = [
     }
 ]
 
+const monsters = [
+    {
+        name: "slime",
+        level: 2,
+        health: 15
+    },
+    {
+        name: "beast",
+        level: 8,
+        health: 60
+    },
+    {
+        name: "Drakorath",
+        level: 20,
+        health: 300
+    }
+]
+
 const locations = [
     {
         name: "Town Square",
@@ -51,6 +69,12 @@ const locations = [
         "button text": ["Fight slime", "Fight beast", "Go to Town Square"],
         "button functions": [fightSlime, fightBeast, goTown],
         text: `As you step into the dimly lit cave, your eyes adjust to the darkness, revealing shadowy figures lurking ahead. Two creatures emerge—a slimy, gelatinous slime and a fierce, snarling beast—blocking your path with no other route in sight. The slime's slow, predictable movements and vulnerable, jelly-like body make it an easier target, while the beast is agile and powerful, with sharp claws and a menacing growl. Consider your options carefully, as your decision will determine the outcome of this encounter. <br>Will you face these monsters in battle?`
+    },
+    {
+        name: "Fight",
+        "button text": ["Attack", "Dodge", "Run"],
+        "button functions": [attack, dodge, goTown],
+        text: "You face a menacing monster, readying yourself for battle."
     }
 ]
 
@@ -80,10 +104,6 @@ function goDungeon() {
     update(locations[2])
 }
 
-function fightDrakorath() {
-
-}
-
 function buyHealth() {
         if (coin >= 10){
             coin -= 10
@@ -93,12 +113,13 @@ function buyHealth() {
             text.innerHTML = "You carefully select a small vial containing a shimmering red liquid—the renowned health potion. <br><br> With a quick sip, you feel a surge of vitality as your wounds begin to heal. <br><br>Your health increases by 10 points, fortifying you for the challenges that lie ahead."
         }
         else{
-            text.innerHTML = "It seems like you don't have enough money to buy a health potion! <br><br>Go to the dungeon kill some monsters"
+            text.innerHTML = "As you reach for the health potion, you realize you don't have enough coins to make the purchase. Disappointed, you decide to save your coins for another time, keeping your health at its current level for now."
         }
     }
 
 function buyWeapon() {
-        if (coin >= 30 && currentWeapon <= 2){
+    if (currentWeapon < weapons.length - 1) {
+        if (coin >= 30) {
             coin -= 30
             currentWeapon++
             coinText.textContent = coin;
@@ -108,19 +129,64 @@ function buyWeapon() {
             text.innerHTML += ` <br><br>You add it to your inventory, alongside your trusty ${inventory} <br><br>`
             inventory.push(newWeapon)
             text.innerHTML += `Inventory: ${inventory}`
+        } else {
+            text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
         }
-        else if (currentWeapon === 3) {
-            text.innerHTML = "As you make your selections, you realize that you've purchased everything the store has to offer. <br><br> Your inventory now includes a variety of powerful weapons and useful items, giving you a significant advantage in your quest. <br><br>With your newfound gear, you feel more prepared than ever to face the challenges ahead."
-        }
-        else {
-            text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. You decide to stick with your current gear for now, hoping to earn more coins in the future."
-        }
+    }
+    else {
+        text.innerHTML = "As you make your selections, you realize that you've purchased everything the store has to offer. <br><br> Your inventory now includes a variety of powerful weapons and useful items, giving you a significant advantage in your quest. <br><br>With your newfound gear, you feel more prepared than ever to face the challenges ahead."
+        middleButton.innerText = "Sell weapon for 15 coin"
+        middleButton.onclick = sellWeapon;
+    }
+}
+
+function sellWeapon() {
+    if (inventory.length > 1) {
+        coin += 15
+        coinText.textContent = coin
+        let currentWeapon = inventory.shift()
+        text.innerHTML = `You sell your ${currentWeapon}, adding a few coins to your purse.<br><br>`
+        text.innerHTML += `Inventory: ${inventory}`
+    }
+    else {
+        text.innerHTML = "You decide against selling your only weapon, realizing the importance of having it for your journey.<br><br>"
+        text.innerHTML += `Inventory: ${inventory}`
+    }
 }
 
 function fightSlime() {
-
+    fighting = 0
+    goFight()
 }
 
 function fightBeast() {
+    fighting = 1
+    goFight()
+}
+
+function fightDrakorath() {
+    fighting = 2
+    goFight()
+}
+
+function goFight() {
+    update(locations[3])
+    monsterHealth = monsters[fighting].health
+    monsterStats.style.display = "block"
+    monsterNameText.textContent = monsters[fighting].name
+    monsterHealthText.textContent = monsterHealth
+}
+
+function attack() {
+    text.innerHTML = `The ${monsters[fighting].name} attacks.`
+    text.innerHTML += ` You attack it with your ${weapons[currentWeapon].name}.`
+    hp -= monsters[fighting].level
+    monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1
+    hpText.textContent = hp
+    monsterHealthText.innerHTML = monsterHealth
+
+}
+
+function dodge() {
 
 }
