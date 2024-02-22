@@ -15,29 +15,41 @@ body {
     display: flex;
     flex-direction: row;
     background-color: #d7dfe3;
+}
+
+#xp, #hp, #coin, #location {
     font-weight: bold;
 }
 
 .info, .direction, .context {
     height: 50px;
-    width: 500px;
+    width: 600px;
     align-items: center;
     justify-content: space-around;
     padding: 10px;
     border: 1px solid black;
 }
 
+.stat {
+    width: 100px;
+}
+
+.current {
+    width: 100px;
+}
+
 .context {
-    height: 200px;
+    height: 250px;
     font-weight: normal;
 }
 
 .text {
     background-color: black;
     color: white;
-    height: 200px;
-    width: 490px;
+    height: 250px;
+    width: 590px;
     padding-left: 15px;
+    padding-right: 15px;
     font-size: 20px;
 }
 
@@ -57,9 +69,4 @@ body {
 .buttonDirection:hover {
     background-color: #2c3b4f;
 }
-
-#button1, #button3 {
-    background-color: #d7dfe3;
-}
-
 
