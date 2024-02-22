@@ -1,1 +1,1 @@
-# mini-game
+# mini-rpg-game
