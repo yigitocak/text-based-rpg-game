@@ -21,7 +21,7 @@ body {
     font-weight: bold;
 }
 
-.info, .direction, .context, .monsterStat {
+.info, .direction, .context, #monsterStat {
     height: 50px;
     width: 600px;
     align-items: center;
@@ -70,6 +70,14 @@ body {
     background-color: #2c3b4f;
 }
 
-.monsterStat {
+#monsterStat {
+    display: none;
+}
+
+#monsterHpText, #monsterNameText, #monsterLevel {
+    font-weight: bold;
+}
+
+#button1, #button3 {
     display: none;
 }
