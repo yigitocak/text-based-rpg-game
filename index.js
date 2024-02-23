@@ -223,7 +223,7 @@ function attack() {
     if (hp <= 0){
         lose()
     }
-    else if (monsterHealth <= 0){
+    else if (monsterHealth <= 0 && hp > 0){
         fighting === 2 ? winGame() : defeatMonster()
     }
 }
@@ -261,7 +261,7 @@ function restart() {
 }
 
 function credits() {
-    text.innerHTML = "Congratulations on completing your adventure in this fantastical realm! Your journey through these lands, crafted by the imaginative mind of Yigit Ocak, has been an epic one. From battling fierce monsters to acquiring legendary weapons, your deeds will be remembered in the annals of gaming history. May your next adventure be as thrilling as this one!"
+    text.innerHTML = "Congratulations on completing your adventure in this fantastical realm! Your journey through these lands, crafted by Yigit Ocak. From battling fierce monsters to acquiring legendary weapons, your deeds will be remembered in the annals of gaming history. May your next adventure be as thrilling as this one!"
 }
 
 function moreLore() {
