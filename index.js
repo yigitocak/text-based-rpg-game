@@ -1,6 +1,6 @@
 let xp = 0
 let hp = 100
-let coin = 50
+let coin = 1050
 let currentWeapon = 0
 let fighting
 let monsterHealth
@@ -21,22 +21,26 @@ const weapons = [
     {
         name: "stick",
         power: 5,
-        price: 0
+        price: 0,
+        sell: 0
     },
     {
         name: " dagger",
-        power: 10,
-        price: 20
+        power: 15,
+        price: 20,
+        sell: 10
     },
     {
-        name: " Iron sword" ,
-        power: 30,
-        price: 50
+        name: " sword" ,
+        power: 35,
+        price: 50,
+        sell: 25
     },
     {
         name: " Fire wand",
-        power: 100,
-        price: 250
+        power: 150,
+        price: 250,
+        sell: 150
     }
 ]
 
@@ -44,17 +48,23 @@ const monsters = [
     {
         name: "slime",
         level: 2,
-        health: 15
+        health: 20,
+        coin: 5,
+        attack: 5
     },
     {
         name: "beast",
         level: 8,
-        health: 60
+        health: 80,
+        coin: 20,
+        attack: 20
     },
     {
         name: "Drakorath",
         level: 20,
-        health: 300
+        health: 600,
+        attack: 75,
+        coin: 1000
     }
 ]
 
@@ -67,7 +77,7 @@ const locations = [
     },
     {
         name: "Store",
-        "button text": ["Buy a health potion (10 coin)", "Buy weapon (30 coin)", "Go to Town Square"],
+        "button text": ["Buy a health potion (10 coin)", `Buy weapon (20 coin)`, "Go to Town Square"],
         "button functions": [buyHealth, buyWeapon, goTown],
         text: `As you step through the creaking door, the scent of leather and steel fills your nostrils. <br> <br> Shelves line the walls, displaying an array of gleaming swords and potions. <br><br>Behind the counter, a grizzled blacksmith looks up, nodding in greeting. Welcome to the store, where heroes are made. <br><br>What will you buy to aid you in your quest?`
     },
@@ -153,42 +163,48 @@ function buyHealth() {
         }
     }
 
-function buyWeapon() {
-    if (currentWeapon < weapons.length - 1) {
-        if (coin >= 30) {
-            coin -= 30
-            currentWeapon++
-            coinText.textContent = coin;
-            let newWeapon = weapons[currentWeapon].name
-            let weaponDamage = weapons[currentWeapon].power
-            text.innerHTML = `As you purchase the ${newWeapon}, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weaponDamage} power, it promises to be a formidable weapon against your foes. `
-            text.innerHTML += ` <br><br>You add it to your inventory, alongside your trusty ${inventory} <br><br>`
-            inventory.push(newWeapon)
-            text.innerHTML += `Inventory: ${inventory}`
-        } else {
-            text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
+    function buyWeapons() {
+    update(locations[9])
+    }
+
+
+    function buyWeapon() {
+        if (currentWeapon < weapons.length - 2) {
+            if (coin >= weapons[currentWeapon + 1].price) {
+                coin -= weapons[currentWeapon + 1].price
+                currentWeapon += 1
+                coinText.textContent = coin;
+                let newWeapon = weapons[currentWeapon].name
+                let weaponDamage = weapons[currentWeapon].power
+                text.innerHTML = `As you purchase the ${newWeapon}, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weaponDamage} power, it promises to be a formidable weapon against your foes. `
+                text.innerHTML += ` <br><br>You add it to your inventory, alongside your trusty ${inventory} <br><br>`
+                inventory.push(newWeapon)
+                text.innerHTML += `Inventory: ${inventory}`
+                middleButton.innerText = `Buy weapon (${weapons[currentWeapon + 1].price} coin)`
+            } else {
+                text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
+            }
+        }
+        else {
+            text.innerHTML = "As you make your selections, you realize that you've purchased everything the store has to offer. <br><br> Your inventory now includes a variety of powerful weapons and useful items, giving you a significant advantage in your quest. <br><br>With your newfound gear, you feel more prepared than ever to face the challenges ahead."
+            middleButton.innerText = `Sell weapon for ${weapons[currentWeapon + 1].sell}`
+            middleButton.onclick = sellWeapon;
         }
     }
-    else {
-        text.innerHTML = "As you make your selections, you realize that you've purchased everything the store has to offer. <br><br> Your inventory now includes a variety of powerful weapons and useful items, giving you a significant advantage in your quest. <br><br>With your newfound gear, you feel more prepared than ever to face the challenges ahead."
-        middleButton.innerText = "Sell weapon for 15 coin"
-        middleButton.onclick = sellWeapon;
-    }
-}
 
-function sellWeapon() {
-    if (inventory.length > 1) {
-        coin += 15
-        coinText.textContent = coin
-        let currentWeapon = inventory.shift()
-        text.innerHTML = `You sell your ${currentWeapon}, adding a few coins to your purse.<br><br>`
-        text.innerHTML += `Inventory: ${inventory}`
+    function sellWeapon() {
+        if (inventory.length > 1) {
+            coin += weapons[currentWeapon + 1].sell
+            coinText.textContent = coin
+            let currentWeapon = inventory.shift()
+            text.innerHTML = `You sell your ${currentWeapon}, adding a few coins to your purse.<br><br>`
+            text.innerHTML += `Inventory: ${inventory}`
+        }
+        else {
+            text.innerHTML = "You decide against selling your only weapon, realizing the importance of having it for your journey.<br><br>"
+            text.innerHTML += `Inventory: ${inventory}`
+        }
     }
-    else {
-        text.innerHTML = "You decide against selling your only weapon, realizing the importance of having it for your journey.<br><br>"
-        text.innerHTML += `Inventory: ${inventory}`
-    }
-}
 
 function fightSlime() {
     fighting = 0
@@ -216,8 +232,8 @@ function goFight() {
 function attack() {
     text.innerHTML = `The ${monsters[fighting].name} attacks.`
     text.innerHTML += ` You attack it with your ${weapons[currentWeapon].name}.`
-    hp -= monsters[fighting].level
-    monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1
+    hp -= monsters[fighting].attack
+    monsterHealth -= weapons[currentWeapon].power
     hpText.textContent = hp
     monsterHealthText.innerHTML = monsterHealth
     if (hp <= 0){
@@ -233,7 +249,7 @@ function dodge() {
 }
 
 function defeatMonster() {
-    coin += Math.floor(monsters[fighting].level * 6.7)
+    coin += Math.floor(monsters[fighting].level * 2.7)
     coinText.textContent = coin
     xp += monsters[fighting].level
     xpText.textContent = xp
