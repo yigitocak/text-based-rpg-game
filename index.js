@@ -163,11 +163,6 @@ function buyHealth() {
         }
     }
 
-    function buyWeapons() {
-    update(locations[9])
-    }
-
-
     function buyWeapon() {
         if (currentWeapon < weapons.length - 2) {
             if (coin >= weapons[currentWeapon + 1].price) {
