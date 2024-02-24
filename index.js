@@ -56,7 +56,7 @@ const monsters = [
     {
         name: "slime",
         level: 2,
-        health: 20,
+        health: 12,
         attack: 5,
         critic: Math.random() <= 0.05
     },
@@ -288,7 +288,7 @@ function attack() {
     text.innerHTML = `The ${monsters[fighting].name} attacks.`
     text.innerHTML += ` You attack the ${monsters[fighting].name}.`
     hp -= monsters[fighting].attack
-    monsterHealth -= yourPower
+    monsterHealth -= yourPower + (xp * 0.25)
     hpText.textContent = hp
     monsterHealthText.innerHTML = monsterHealth
     if (hp <= 0){
@@ -311,7 +311,7 @@ function spell() {
 }
 
 function defeatMonster() {
-    coin += Math.floor(monsters[fighting].level * 3.5)
+    coin += Math.round(monsters[fighting].level * 3.5 + (xp * 0.25))
     coinText.textContent = coin
     xp += monsters[fighting].level
     xpText.textContent = xp
@@ -330,9 +330,9 @@ function winGame() {
 function restart() {
     xp = 0
     hp = 100
-    coin = 50
+    coin = 10
+    coinText.textContent = coin
     inventory = ['stick']
-    coin.textContent = coin
     xpText.textContent = xp
     hpText.textContent = hp
     start()
