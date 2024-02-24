@@ -1,7 +1,7 @@
 let xp = 0
 let hp = 100
 let coin = 10
-let swordLimit = 0
+let yourPower = 5
 let fighting
 let monsterHealth
 let inventory = [`stick`]
@@ -57,15 +57,13 @@ const monsters = [
         name: "slime",
         level: 2,
         health: 20,
-        coin: 5,
         attack: 5,
         critic: Math.random() <= 0.05
     },
     {
         name: "beast",
-        level: 8,
+        level: 10,
         health: 80,
-        coin: 20,
         attack: 20,
         critic: Math.random() <= 0.1
     },
@@ -74,7 +72,6 @@ const monsters = [
         level: 20,
         health: 600,
         attack: 75,
-        coin: 1000,
         critic: Math.random() <= 0.2
     }
 ]
@@ -82,7 +79,7 @@ const monsters = [
 const locations = [
     {
         name: "Town Square",
-        "button text": ["Go to store", "Go to dungeon", "Fight the dragon"],
+        "button text": ["Go to store", "Go to dungeon", "Fight the Drakorath"],
         "button functions": [goStore, goDungeon, fightDrakorath],
         text: `When you enter the bustling Town Square, your eyes are drawn to a weather-worn sign that reads "store" <br><br> It beckons you with the promise of powerful swords and essential supplies.<br><br>Will you venture inside and equip yourself for the battles ahead?`
     },
@@ -100,7 +97,7 @@ const locations = [
     },
     {
         name: "Fight",
-        "button text": ["Attack", "Dodge", "Run"],
+        "button text": ["Attack", "Spell", "Run"],
         "button functions": [attack, spell, run],
         text: "You face a menacing monster, readying yourself for battle."
     },
@@ -151,6 +148,12 @@ const locations = [
         "button text": ["Go to store", "Go to dungeon", "Fight the dragon"],
         "button functions": [goStore, goDungeon, fightDrakorath],
         text: "Your run attempt was successful!"
+    },
+    {
+        name: "Spells",
+        "button text": ["Fire spell", "Lightning Spell", "Back"],
+        "button functions": [castFire, castLightning, goFight],
+        text: `You're going to cast a spell choose one of the above.`
     }
 ]
 
@@ -196,13 +199,11 @@ function buyHealth() {
             text.innerHTML = "You carefully select a small vial containing a shimmering red liquid—the renowned health potion. <br><br> With a quick sip, you feel a surge of vitality as your wounds begin to heal. <br><br>Your health increases by 10 points, fortifying you for the challenges that lie ahead."
         }
         else{
-            text.innerHTML = "As you reach for the health potion, you realize you don't have enough coins to make the purchase. Disappointed, you decide to save your coins for another time, keeping your health at its current level for now."
+            text.innerHTML = "As you reach for the health potion, you realize you don't have enough coins to make the purchase. <br><br>Disappointed, you decide to save your coins for another time, keeping your health at its current level for now."
         }
     }
     function buyWeapon() {
         update(locations[10])
-        text.innerHTML = "As you make your selections, you realize that you've purchased everything the store has to offer. <br><br> Your inventory now includes a variety of powerful weapons and useful items, giving you a significant advantage in your quest. <br><br>With your newfound gear, you feel more prepared than ever to face the challenges ahead."
-
     }
 
    /* function buyDagger() {
@@ -217,19 +218,21 @@ function buyHealth() {
     }*/
 
     function buySword() {
-        if (coin >= weapons[2].price && swordLimit < 1) {
+        if (coin >= weapons[2].price && weapons[2].limit < 1) {
             coin -= weapons[2].price
             coinText.textContent = coin
             text.innerHTML = `As you purchase the sword, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weapons[2].power} power, it promises to be a formidable weapon against your foes. `
             weapons[2].limit++
-            middleButton.innerText = "Sell sword (25 coins)"
+            yourPower += weapons[2].power
+            leftButton.innerText = "Sell sword (25 coins)"
         }
         else if (weapons[2].limit === 1) {
             coin += weapons[2].sell
             coinText.textContent = coin
             text.innerHTML = `You sell your sword, adding a few coins to your purse.<br><br>`
             weapons[2].limit--
-            middleButton.innerText = "Buy sword (50 coins)"
+            yourPower -= weapons[2].power
+            leftButton.innerText = "Buy sword (50 coins)"
         }
         else {
             text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
@@ -237,10 +240,21 @@ function buyHealth() {
     }
 
     function buyWand() {
-        if (coin >= weapons[3].price) {
+        if (coin >= weapons[3].price && weapons[3].limit < 1) {
             coin -= weapons[3].price
             coinText.textContent = coin
-            text.innerHTML = `As you purchase the wand, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weapons[3].power} power, it promises to be a formidable weapon against your foes. `
+            text.innerHTML = `As you purchase the wand, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weapons[2].power} power, it promises to be a formidable weapon against your foes. `
+            weapons[3].limit++
+            yourPower += weapons[3].power
+            middleButton.innerText = "Sell wand (125 coins)"
+        }
+        else if (weapons[3].limit === 1) {
+            coin += weapons[3].sell
+            coinText.textContent = coin
+            text.innerHTML = `You sell your wand, adding a few coins to your purse.<br><br>`
+            weapons[3].limit--
+            yourPower -= weapons[3].power
+            middleButton.innerText = "Buy wand (250 coins)"
         }
         else {
             text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
@@ -272,9 +286,9 @@ function goFight() {
 
 function attack() {
     text.innerHTML = `The ${monsters[fighting].name} attacks.`
-    text.innerHTML += ` You attack the monster.`
+    text.innerHTML += ` You attack the ${monsters[fighting].name}.`
     hp -= monsters[fighting].attack
-    monsterHealth -= weapons[inventory].power
+    monsterHealth -= yourPower
     hpText.textContent = hp
     monsterHealthText.innerHTML = monsterHealth
     if (hp <= 0){
@@ -285,12 +299,19 @@ function attack() {
     }
 }
 
+function castLightning() {
+    goFight()
+}
+function castFire() {
+    goFight()
+}
 function spell() {
-    text.innerHTML = `You're going to cast a spell against ${monsters[fighting].name}.`
+    update(locations[12])
+    monsterStats.style.display = "flex"
 }
 
 function defeatMonster() {
-    coin += Math.floor(monsters[fighting].level * 2.7)
+    coin += Math.floor(monsters[fighting].level * 3.5)
     coinText.textContent = coin
     xp += monsters[fighting].level
     xpText.textContent = xp
@@ -298,6 +319,7 @@ function defeatMonster() {
 }
 
 function lose() {
+    hpText.textContent = "0"
     update(locations[5])
 }
 
@@ -357,6 +379,11 @@ function run() {
     else {
         hp -= monsters[fighting].attack * 1.5
         hpText.textContent = hp
-        text.innerHTML = "Your running attempt failed that cause you to take more damage!"
+        if(hp > 0) {
+            text.innerHTML = "Your running attempt failed that cause you to take more damage!"
+        }
+        else if(hp <= 0) {
+            lose()
+        }
     }
 }
