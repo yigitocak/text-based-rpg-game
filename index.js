@@ -1,6 +1,6 @@
 let xp = 0
 let hp = 100
-let coin = 1050
+let coin = 50
 let currentWeapon = 0
 let fighting
 let monsterHealth
@@ -22,25 +22,29 @@ const weapons = [
         name: "stick",
         power: 5,
         price: 0,
-        sell: 0
+        sell: 0,
+        critic: Math.random() <= 0.1
     },
     {
         name: " dagger",
         power: 15,
         price: 20,
-        sell: 10
+        sell: 10,
+        critic: Math.random() <= 0.1
     },
     {
         name: " sword" ,
         power: 35,
         price: 50,
-        sell: 25
+        sell: 25,
+        critic: Math.random() <= 0.2
     },
     {
         name: " Fire wand",
         power: 150,
         price: 250,
-        sell: 150
+        sell: 150,
+        critic: Math.random() <= 0.35
     }
 ]
 
@@ -50,21 +54,24 @@ const monsters = [
         level: 2,
         health: 20,
         coin: 5,
-        attack: 5
+        attack: 5,
+        critic: Math.random() <= 0.05
     },
     {
         name: "beast",
         level: 8,
         health: 80,
         coin: 20,
-        attack: 20
+        attack: 20,
+        critic: Math.random() <= 0.1
     },
     {
         name: "Drakorath",
         level: 20,
         health: 600,
         attack: 75,
-        coin: 1000
+        coin: 1000,
+        critic: Math.random() <= 0.2
     }
 ]
 
@@ -77,8 +84,8 @@ const locations = [
     },
     {
         name: "Store",
-        "button text": ["Buy a health potion (10 coin)", `Buy weapon (20 coin)`, "Go to Town Square"],
-        "button functions": [buyHealth, buyWeapon, goTown],
+        "button text": ["Buy Consumable", `Buy Weapon`, "Go to Town Square"],
+        "button functions": [buyConsumable, buyWeapon, goTown],
         text: `As you step through the creaking door, the scent of leather and steel fills your nostrils. <br> <br> Shelves line the walls, displaying an array of gleaming swords and potions. <br><br>Behind the counter, a grizzled blacksmith looks up, nodding in greeting. Welcome to the store, where heroes are made. <br><br>What will you buy to aid you in your quest?`
     },
     {
@@ -90,7 +97,7 @@ const locations = [
     {
         name: "Fight",
         "button text": ["Attack", "Dodge", "Run"],
-        "button functions": [attack, dodge, goTown],
+        "button functions": [attack, spell, goTown],
         text: "You face a menacing monster, readying yourself for battle."
     },
     {
@@ -122,6 +129,12 @@ const locations = [
         "button text": ["Back", "Lore Page 3", "Start"],
         "button functions": [welcome, page3, start],
         text: "As you journey through the town, you encounter weak monsters that Drakorath has unleashed upon the streets. With each victory against these minions, you gain experience and collect coins, slowly growing stronger and more skilled in combat. <br><br> With the coins you earn, you visit the local blacksmith and purchase better swords, each one imbued with magical properties that enhance your abilities. These swords become symbols of your growing strength and determination to defeat Drakorath."
+    },
+    {
+        name: "Consumables",
+        "button text": ["Health Potion (10 coin)", "Fire Scroll (50 coin)", "Lightning scroll (75 coin)"],
+        "button functions": [buyHealth, buyFire, buyLightning],
+        text: "Choose one of the above to buy."
     }
 ]
 
@@ -150,6 +163,19 @@ function goDungeon() {
     update(locations[2])
 }
 
+function buyConsumable() {
+    update(locations[9])
+}
+
+function buyFire() {
+
+}
+
+function buyLightning() {
+
+}
+
+
 function buyHealth() {
         if (coin >= 10){
             coin -= 10
@@ -162,7 +188,6 @@ function buyHealth() {
             text.innerHTML = "As you reach for the health potion, you realize you don't have enough coins to make the purchase. Disappointed, you decide to save your coins for another time, keeping your health at its current level for now."
         }
     }
-
     function buyWeapon() {
         if (currentWeapon < weapons.length - 2) {
             if (coin >= weapons[currentWeapon + 1].price) {
@@ -188,17 +213,14 @@ function buyHealth() {
     }
 
     function sellWeapon() {
-        if (inventory.length > 1) {
-            coin += weapons[currentWeapon + 1].sell
-            coinText.textContent = coin
-            let currentWeapon = inventory.shift()
-            text.innerHTML = `You sell your ${currentWeapon}, adding a few coins to your purse.<br><br>`
-            text.innerHTML += `Inventory: ${inventory}`
-        }
-        else {
-            text.innerHTML = "You decide against selling your only weapon, realizing the importance of having it for your journey.<br><br>"
-            text.innerHTML += `Inventory: ${inventory}`
-        }
+        coin += weapons[currentWeapon + 1].sell
+        coinText.textContent = coin
+        let currentWeapon = inventory.shift()
+        text.innerHTML = `You sell your ${currentWeapon}, adding a few coins to your purse.<br><br>`
+        text.innerHTML += `Inventory: ${inventory}`
+        text.innerHTML = "You decide against selling your only weapon, realizing the importance of having it for your journey.<br><br>"
+        text.innerHTML += `Inventory: ${inventory}`
+
     }
 
 function fightSlime() {
@@ -239,8 +261,8 @@ function attack() {
     }
 }
 
-function dodge() {
-    text.innerHTML = `You swiftly dodge the ${monsters[fighting].name} attack, narrowly avoiding its strike.`
+function spell() {
+    text.innerHTML = `You're going to cast a spell against ${monsters[fighting].name}.`
 }
 
 function defeatMonster() {
