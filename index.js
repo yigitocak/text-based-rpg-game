@@ -9,6 +9,15 @@ let yourTurn = 1
 let yourCriticChance = 0.01
 let inventory = [`stick`]
 
+const slimeAttackNumber = 6
+const  slimeAbilities = [
+    {
+        name: "HAHAA",
+        power: 50,
+        text: "The zombie did the ultimate move and started juggling 3 purple hairy balls, you get 50 damage lol"
+    }
+]
+
 const xpText = document.getElementById('xp')
 const hpText = document.getElementById('hp')
 const coinText = document.getElementById('coin')
@@ -322,15 +331,26 @@ function attack() {
                 fighting === 2 ? winGame() : defeatMonster()
             }
         }
-        else if((yourTurn === 0 && hp > 0) && monsters[fighting].critic > Math.random()) {
-            text.innerHTML = `The ${monsters[fighting].name} landed a critical attack.`
-            let monsterCritic = monsters[fighting].attack * 1.75
-            hp -= monsterCritic
-            hpText.textContent = hp
-            text.innerHTML += `<br><br>Damage: ${monsterCritic}`
-            yourTurn++
-            if(hp <= 0){
-                lose()
+        else if(yourTurn === 0 && hp > 0) {
+            let max = 6
+            let min = 1
+            let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min
+            if (randomNumber === slimeAttackNumber) {
+                let randomIndex = Math.floor(Math.random() * slimeAbilities.length)
+                let randomObject = slimeAbilities[randomIndex]
+                text.innerText = randomObject.text
+                hp -= randomObject.power
+                hpText.textContent = hp
+            } else {
+                text.innerHTML = `The ${monsters[fighting].name} landed a critical attack.`
+                let monsterCritic = monsters[fighting].attack * 1.75
+                hp -= monsterCritic
+                hpText.textContent = hp
+                text.innerHTML += `<br><br>Damage: ${monsterCritic}`
+                yourTurn++
+                if (hp <= 0) {
+                    lose()
+                }
             }
         }
         else if(yourTurn === 0 && hp > 0){
