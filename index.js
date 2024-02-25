@@ -399,7 +399,7 @@ function restart() {
     hpText.textContent = hp
     yourTurn = 1
     scrollAmount = 0
-    yourCriticChance = 0.01
+    yourCriticChance = 0.05
     start()
 }
 
