@@ -6,7 +6,7 @@ let fighting
 let monsterHealth
 let scrollAmount = 0
 let yourTurn = 1
-let yourCriticChance = 0.01
+let yourCriticChance = 0.05
 let inventory = [`stick`]
 
 const xpText = document.getElementById('xp')
@@ -399,7 +399,7 @@ function restart() {
     hpText.textContent = hp
     yourTurn = 1
     scrollAmount = 0
-    yourCriticChance = 0.01
+    yourCriticChance = 0.05
     start()
 }
 
