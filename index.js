@@ -348,7 +348,7 @@ function spell() {
     if(yourTurn === 1 && hp > 0) {
         if (scrollAmount >= 1) {
             text.innerHTML = `You cast a fire spell against the ${monsters[fighting].name}.`
-            monsterHealth -= 10
+            monsterHealth -= 100
             monsterHealthText.textContent = monsterHealth
             scrollAmount--
             text.innerHTML += `<br><br><br>Inventory: ${scrollAmount}`
