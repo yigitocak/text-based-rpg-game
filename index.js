@@ -149,12 +149,6 @@ const locations = [
         "button functions": [goStore, goDungeon, fightDrakorath],
         text: "Your run attempt was successful!"
     },
-    {
-        name: "Spells",
-        "button text": ["Fire spell", "Lightning Spell", "Back"],
-        "button functions": [castFire, castLightning, goFight],
-        text: `You're going to cast a spell choose one of the above.`
-    }
 ]
 
 middleButton.onclick = welcome
@@ -203,7 +197,22 @@ function buyHealth() {
         }
     }
     function buyWeapon() {
-        update(locations[10])
+        if(weapons[2].limit === 1 && weapons[3].limit === 1){
+            update(locations[10])
+            leftButton.innerText = "Sell sword (25 coins)"
+            middleButton.innerText = "Sell wand (125 coins)"
+        }
+        else if(weapons[2].limit === 1 && weapons[3].limit === 0) {
+            update(locations[10])
+            leftButton.innerText = "Sell sword (25 coins)"
+        }
+        else if(weapons[2].limit === 0 && weapons[3].limit === 1){
+            update(locations[10])
+            middleButton.innerText = "Sell wand (125 coins)"
+        }
+        else {
+            update(locations[10])
+        }
     }
 
    /* function buyDagger() {
@@ -299,15 +308,9 @@ function attack() {
     }
 }
 
-function castLightning() {
-    goFight()
-}
-function castFire() {
-    goFight()
-}
 function spell() {
-    update(locations[12])
-    monsterStats.style.display = "flex"
+    text.innerHTML = `The ${monsters[fighting].name} attacks.`
+    text.innerHTML += ` You attack the ${monsters[fighting].name}.`
 }
 
 function defeatMonster() {
@@ -331,8 +334,8 @@ function restart() {
     xp = 0
     hp = 100
     coin = 10
-    coinText.textContent = coin
     inventory = ['stick']
+    coinText.textContent = coin
     xpText.textContent = xp
     hpText.textContent = hp
     start()
