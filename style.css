@@ -1,11 +1,11 @@
 body {
-    background-color: #476888;
+    background-color: #101726;
     font-family: arial;
 }
 
 .container {
     display: flex;
-    height: 600px;
+    height: 700px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -14,7 +14,7 @@ body {
 .box {
     display: flex;
     flex-direction: row;
-    background-color: #d7dfe3;
+    background-color: #717680;
 }
 
 #xp, #hp, #coin {
@@ -23,7 +23,7 @@ body {
 
 .info, .direction, .context, #monsterStat {
     height: 50px;
-    width: 600px;
+    width: 700px;
     align-items: center;
     justify-content: space-around;
     padding: 10px;
@@ -39,39 +39,51 @@ body {
 }
 
 .context {
-    height: 250px;
+    height: 300px;
     font-weight: normal;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 .text {
     background-color: black;
     color: white;
-    height: 250px;
-    width: 590px;
+    height: 300px;
+    width: 670px;
     padding-left: 15px;
     padding-right: 15px;
-    font-size: 20px;
+    font-size: 22px;
+    border-radius: 15px;
+
+
 }
 
 #story {
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .buttonDirection {
     padding: 10px 20px;
     border-radius: 7px;
     border: none;
-    background-color: #476888;
+    background-color: #233150;
     color: white;
-    font-weight: bold;
+    font-size: 18px;
 }
 
 .buttonDirection:hover {
-    background-color: #2c3b4f;
+    background-color: #101726;
+}
+
+.info {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 }
 
 #monsterStat {
     display: none;
+    border-radius: 25px;
+    margin-bottom: 10px;
 }
 
 #monsterHpText, #monsterNameText, #monsterLevel {
