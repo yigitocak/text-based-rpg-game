@@ -4,6 +4,9 @@ let coin = 10
 let yourPower = 5
 let fighting
 let monsterHealth
+let scrollAmount = 0
+let yourTurn = 1
+let yourCriticChance = 0.01
 let inventory = [`stick`]
 
 const xpText = document.getElementById('xp')
@@ -23,7 +26,7 @@ const weapons = [
         power: 5,
         price: 0,
         sell: 0,
-        critic: Math.random() <= 0.01,
+        critic: 0.05,
         limit: 0
     },
     {
@@ -31,7 +34,7 @@ const weapons = [
         power: 15,
         price: 20,
         sell: 10,
-        critic: Math.random() <= 0.1,
+        critic: 0.1,
         limit: 0
     },
     {
@@ -39,7 +42,7 @@ const weapons = [
         power: 35,
         price: 50,
         sell: 25,
-        critic: Math.random() <= 0.2,
+        critic: 0.12,
         limit: 0
     },
     {
@@ -47,7 +50,7 @@ const weapons = [
         power: 150,
         price: 250,
         sell: 125,
-        critic: Math.random() <= 0.35,
+        critic: 0.23,
         limit: 0
     }
 ]
@@ -58,21 +61,21 @@ const monsters = [
         level: 2,
         health: 12,
         attack: 5,
-        critic: Math.random() <= 0.05
+        critic: 0.05
     },
     {
         name: "beast",
         level: 10,
         health: 80,
         attack: 20,
-        critic: Math.random() <= 0.1
+        critic: 0.12
     },
     {
         name: "Drakorath",
         level: 20,
         health: 600,
         attack: 75,
-        critic: Math.random() <= 0.2
+        critic: 0.25
     }
 ]
 
@@ -85,7 +88,7 @@ const locations = [
     },
     {
         name: "Store",
-        "button text": ["Buy Consumable", `Buy Weapon`, "Go to Town Square"],
+        "button text": ["Buy consumable", `Buy weapon`, "Go to Town Square"],
         "button functions": [buyConsumable, buyWeapon, goTown],
         text: `As you step through the creaking door, the scent of leather and steel fills your nostrils. <br> <br> Shelves line the walls, displaying an array of gleaming swords and potions. <br><br>Behind the counter, a grizzled blacksmith looks up, nodding in greeting. Welcome to the store, where heroes are made. <br><br>What will you buy to aid you in your quest?`
     },
@@ -139,7 +142,7 @@ const locations = [
     },
     {
         name: "Weapons",
-        "button text": ["Buy sword (50 coin)", "Buy Fire wand (250 coin)", "Go back"],
+        "button text": ["Buy sword (50 coin)", "Buy Magical wand (250 coin)", "Go back"],
         "button functions": [buySword, buyWand, goStore],
         text: "Choose one of the above to buy."
     },
@@ -181,7 +184,11 @@ function buyConsumable() {
 }
 
 function buyFire() {
-
+    coin -= 50
+    coinText.innerText = coin
+    scrollAmount++
+    text.innerHTML = "You purchase a fire scroll, a powerful magical item that allows you to cast fire spells. With this scroll in your possession, you feel a surge of confidence as you prepare to face the challenges ahead.<br><br><br>"
+    text.innerHTML += `Inventory: ${scrollAmount}`
 }
 
 function buyHealth() {
@@ -233,6 +240,7 @@ function buyHealth() {
             text.innerHTML = `As you purchase the sword, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weapons[2].power} power, it promises to be a formidable weapon against your foes. `
             weapons[2].limit++
             yourPower += weapons[2].power
+            yourCriticChance += weapons[2].critic
             leftButton.innerText = "Sell sword (25 coins)"
         }
         else if (weapons[2].limit === 1) {
@@ -255,6 +263,7 @@ function buyHealth() {
             text.innerHTML = `As you purchase the wand, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weapons[2].power} power, it promises to be a formidable weapon against your foes. `
             weapons[3].limit++
             yourPower += weapons[3].power
+            yourCriticChance += weapons[3].critic
             middleButton.innerText = "Sell wand (125 coins)"
         }
         else if (weapons[3].limit === 1) {
@@ -291,26 +300,76 @@ function goFight() {
     monsterStats.style.display = "flex"
     monsterNameText.innerHTML = monsters[fighting].name
     monsterHealthText.textContent = monsterHealth
+    yourTurn = 1
 }
 
 function attack() {
-    text.innerHTML = `The ${monsters[fighting].name} attacks.`
-    text.innerHTML += ` You attack the ${monsters[fighting].name}.`
-    hp -= monsters[fighting].attack
-    monsterHealth -= yourPower + (xp * 0.25)
-    hpText.textContent = hp
-    monsterHealthText.innerHTML = monsterHealth
-    if (hp <= 0){
-        lose()
-    }
-    else if (monsterHealth <= 0 && hp > 0){
-        fighting === 2 ? winGame() : defeatMonster()
-    }
+        if((yourTurn === 1 && hp > 0) && yourCriticChance > Math.random()){
+            text.innerHTML = ` You made a critical attack to the ${monsters[fighting].name}.`
+            monsterHealth -= (yourPower * 1.5)
+            monsterHealthText.innerHTML = monsterHealth
+            yourTurn--
+            if (monsterHealth <= 0) {
+                fighting === 2 ? winGame() : defeatMonster()
+            }
+        }
+        else if(yourTurn === 1 && hp > 0) {
+            text.innerHTML = ` You attack the ${monsters[fighting].name}.`
+            monsterHealth -= yourPower + (xp * 0.25)
+            monsterHealthText.innerHTML = monsterHealth
+            yourTurn--
+            if (monsterHealth <= 0) {
+                fighting === 2 ? winGame() : defeatMonster()
+            }
+        }
+        else if((yourTurn === 0 && hp > 0) && monsters[fighting].critic > Math.random()) {
+            text.innerHTML = `The ${monsters[fighting].name} landed a critical attack.`
+            let monsterCritic = monsters[fighting].attack * 1.75
+            hp -= monsterCritic
+            hpText.textContent = hp
+            text.innerHTML += `<br><br>Damage: ${monsterCritic}`
+            yourTurn++
+            if(hp <= 0){
+                lose()
+            }
+        }
+        else if(yourTurn === 0 && hp > 0){
+            text.innerHTML = `The ${monsters[fighting].name} attacks.`
+            hp -= monsters[fighting].attack
+            hpText.textContent = hp
+            yourTurn++
+            if(hp <= 0){
+                lose()
+            }
+        }
 }
 
 function spell() {
-    text.innerHTML = `The ${monsters[fighting].name} attacks.`
-    text.innerHTML += ` You attack the ${monsters[fighting].name}.`
+    if(yourTurn === 1 && hp > 0) {
+        if (scrollAmount >= 1) {
+            text.innerHTML = `You cast a fire spell against the ${monsters[fighting].name}.`
+            monsterHealth -= 10
+            monsterHealthText.textContent = monsterHealth
+            scrollAmount--
+            text.innerHTML += `<br><br><br>Inventory: ${scrollAmount}`
+            yourTurn--
+            if (monsterHealth <= 0) {
+                fighting === 2 ? winGame() : defeatMonster()
+            }
+        }
+        else {
+            text.innerHTML = "You don't have any fire scrolls"
+        }
+    }
+    else if(yourTurn === 0 && hp > 0){
+        text.innerHTML = `The ${monsters[fighting].name} attacks.`
+        hp -= monsters[fighting].attack
+        hpText.textContent = hp
+        yourTurn++
+        if(hp <= 0){
+            lose()
+        }
+    }
 }
 
 function defeatMonster() {
@@ -338,6 +397,9 @@ function restart() {
     coinText.textContent = coin
     xpText.textContent = xp
     hpText.textContent = hp
+    yourTurn = 1
+    scrollAmount = 0
+    yourCriticChance = 0.01
     start()
 }
 
@@ -376,17 +438,49 @@ function runTown() {
 }
 
 function run() {
-    if (Math.random() <= 0.6) {
-        runTown()
-    }
-    else {
-        hp -= monsters[fighting].attack * 1.5
-        hpText.textContent = hp
-        if(hp > 0) {
-            text.innerHTML = "Your running attempt failed that cause you to take more damage!"
+        if(fighting === 0) {
+            if (Math.random() <= 0.8) {
+                runTown()
+            }
+            else {
+                hp -= monsters[fighting].attack * 1.5
+                hpText.textContent = hp
+                if(hp > 0) {
+                    text.innerHTML = "Your running attempt failed that cause you to take more damage!"
+                }
+                else if(hp <= 0) {
+                    lose()
+                }
+            }
         }
-        else if(hp <= 0) {
-            lose()
+        else if(fighting === 1) {
+            if (Math.random() <= 0.6) {
+                runTown()
+            }
+            else {
+                hp -= monsters[fighting].attack * 1.5
+                hpText.textContent = hp
+                if(hp > 0) {
+                    text.innerHTML = "Your running attempt failed that cause you to take more damage!"
+                }
+                else if(hp <= 0) {
+                    lose()
+                }
+            }
         }
-    }
+        else if(fighting === 2) {
+            if (Math.random() <= 0.3) {
+                runTown()
+            }
+            else {
+                hp -= monsters[fighting].attack * 1.5
+                hpText.textContent = hp
+                if(hp > 0) {
+                    text.innerHTML = "Your running attempt failed that cause you to take more damage!"
+                }
+                else if(hp <= 0) {
+                    lose()
+                }
+            }
+        }
 }
