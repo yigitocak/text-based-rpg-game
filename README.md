@@ -2,7 +2,7 @@
 
 This repository contains my mini project for an RPG game. The game features a hero on a quest to defeat the dragon Drakorath and save the town of Serenity's Rest. Along the way, players can battle monsters, purchase weapons, and level up their character.
 
- ## [Mini RPG Game](https://yigitocak.github.io/mini-rpg-game)
+ ## [Text Based RPG Game](https://yigitocak.github.io/text-based-rpg-game)
   - **Description**: A text-based RPG game where players must defeat monsters and purchase weapons to become the legendary Dragon Slayer.
   - **Technologies**: HTML, CSS, JavaScript
 
