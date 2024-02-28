@@ -222,17 +222,6 @@ function buyHealth() {
         }
     }
 
-   /* function buyDagger() {
-        if (coin >= weapons[1].price){
-            coin -= weapons[1].price
-            coinText.textContent = coin
-            text.innerHTML = `As you purchase the dagger, you feel its weight in your hand, its blade gleaming in the light. <br> With ${weapons[1].power} power, it promises to be a formidable weapon against your foes. `
-        }
-        else {
-            text.innerHTML = "As you look through the store's offerings, you realize you're short on coins and can't afford to buy anything new. <br><br>You decide to stick with your current gear for now, hoping to earn more coins in the future."
-        }
-    }*/
-
     function buySword() {
         if (coin >= weapons[2].price && weapons[2].limit < 1) {
             coin -= weapons[2].price
@@ -306,7 +295,7 @@ function goFight() {
 function attack() {
         if((yourTurn === 1 && hp > 0) && yourCriticChance > Math.random()){
             text.innerHTML = ` You made a critical attack to the ${monsters[fighting].name}.`
-            monsterHealth -= (yourPower * 1.5)
+            monsterHealth -= Math.round(yourPower + xp * 0.1) * 1.75
             monsterHealthText.innerHTML = monsterHealth
             yourTurn--
             if (monsterHealth <= 0) {
@@ -315,7 +304,7 @@ function attack() {
         }
         else if(yourTurn === 1 && hp > 0) {
             text.innerHTML = ` You attack the ${monsters[fighting].name}.`
-            monsterHealth -= yourPower + (xp * 0.25)
+            monsterHealth -= Math.round(yourPower + (xp * 0.1))
             monsterHealthText.innerHTML = monsterHealth
             yourTurn--
             if (monsterHealth <= 0) {
@@ -361,23 +350,30 @@ function spell() {
             text.innerHTML = "You don't have any fire scrolls"
         }
     }
-    else if(yourTurn === 0 && hp > 0){
-        text.innerHTML = `The ${monsters[fighting].name} attacks.`
-        hp -= monsters[fighting].attack
-        hpText.textContent = hp
-        yourTurn++
-        if(hp <= 0){
-            lose()
-        }
-    }
 }
 
 function defeatMonster() {
-    coin += Math.round(monsters[fighting].level * 3.5 + (xp * 0.25))
-    coinText.textContent = coin
-    xp += monsters[fighting].level
-    xpText.textContent = xp
-    update(locations[4])
+    if (fighting === 0 && xp >= 50){
+        coin += Math.round(monsters[fighting].level * 3.5 - (xp * 0.25))
+        coinText.textContent = coin
+        xp += monsters[fighting].level / 2
+        xpText.textContent = xp
+        update(locations[4])
+    }
+    else if (fighting === 0 && xp >= 100){
+        coin += Math.round(monsters[fighting].level * 3.5 - (xp * 0.25))
+        coinText.textContent = coin
+        xp += monsters[fighting].level / 4
+        xpText.textContent = xp
+        update(locations[4])
+    }
+    else{
+        coin += Math.round(monsters[fighting].level * 3.5 + (xp * 0.1))
+        coinText.textContent = coin
+        xp += monsters[fighting].level
+        xpText.textContent = xp
+        update(locations[4])
+    }
 }
 
 function lose() {
@@ -437,7 +433,7 @@ function runTown() {
     update(locations[11])
 }
 
-function run() {
+    function run() {
         if(fighting === 0) {
             if (Math.random() <= 0.8) {
                 runTown()
@@ -483,4 +479,4 @@ function run() {
                 }
             }
         }
-}
+    }
