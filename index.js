@@ -184,7 +184,7 @@ function buyConsumable() {
 }
 
 function buyFire() {
-    if(coin <= 50) {
+    if(coin >= 50) {
         coin -= 50
         coinText.innerText = coin
         scrollAmount++
