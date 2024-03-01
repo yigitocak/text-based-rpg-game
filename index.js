@@ -184,11 +184,16 @@ function buyConsumable() {
 }
 
 function buyFire() {
-    coin -= 50
-    coinText.innerText = coin
-    scrollAmount++
-    text.innerHTML = "You purchase a fire scroll, a powerful magical item that allows you to cast fire spells. With this scroll in your possession, you feel a surge of confidence as you prepare to face the challenges ahead.<br><br><br>"
-    text.innerHTML += `Inventory: ${scrollAmount}`
+    if(coin <= 50) {
+        coin -= 50
+        coinText.innerText = coin
+        scrollAmount++
+        text.innerHTML = "You purchase a fire scroll, a powerful magical item that allows you to cast fire spells. With this scroll in your possession, you feel a surge of confidence as you prepare to face the challenges ahead.<br><br><br>"
+        text.innerHTML += `Inventory: ${scrollAmount}`
+    }
+    else {
+        text.innerHTML = "You don't have enough coins to buy a scroll!"
+    }
 }
 
 function buyHealth() {
