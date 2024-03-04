@@ -26,7 +26,7 @@ body {
     width: 43.75rem;
     align-items: center;
     justify-content: space-around;
-    padding: 6.25rem;
+    padding: 0.625rem;
     border: 1px solid black;
 }
 
@@ -57,11 +57,11 @@ body {
 }
 
 #story {
-    margin-top: 0.938rem;
+    margin-top: 0.938rem
 }
 
 .buttonDirection {
-    padding: 0.625rem 1.25rem;
+    padding: 0.625rem 1.125rem;
     border-radius: 7px;
     border: none;
     background-color: #233150;
