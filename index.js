@@ -359,14 +359,14 @@ function spell() {
 
 function defeatMonster() {
     if (fighting === 0 && xp >= 50){
-        coin += Math.round(monsters[fighting].level * 3.5 - (xp * 0.25))
+        coin += Math.round(monsters[fighting].level * 2.5)
         coinText.textContent = coin
         xp += monsters[fighting].level / 2
         xpText.textContent = xp
         update(locations[4])
     }
     else if (fighting === 0 && xp >= 100){
-        coin += Math.round(monsters[fighting].level * 3.5 - (xp * 0.25))
+        coin += Math.round(monsters[fighting].level * 1.5)
         coinText.textContent = coin
         xp += monsters[fighting].level / 4
         xpText.textContent = xp
